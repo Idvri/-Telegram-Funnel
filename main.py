@@ -20,12 +20,14 @@ app = Client(
 
 
 @app.on_message(filters=filters.command('start'))
-async def handler(client: Client, message: Message) -> None:
+async def start_funnel_handler(client: Client, message: Message) -> None:
+    """Handler для запуска воронки при первом обращении пользователя к боту."""
+
     check_user = await create_funnel_db(message.from_user.id, 'alive')
     if check_user:
         chat_id = message.chat.id
         counter = 0
-        intervals = {1: 10, 2: 10, 3: 10}
+        intervals = {1: 360, 2: 2340, 3: 93600}
         while True:
             if counter == 3:
                 await change_funnel_status(message.from_user.id, 'finished')
@@ -42,8 +44,10 @@ async def handler(client: Client, message: Message) -> None:
 
 
 @app.on_message()
-async def triggers_handler(_, message: Message) -> None:
-    if await check_triggers(message.text):
+async def triggers_funnel_handler(_, message: Message) -> None:
+    """Handler для проверки новых сообщений пользователей на наличие слов-триггеров."""
+
+    if await check_status(message.from_user.id) and await check_triggers(message.text):
         await change_funnel_status(message.from_user.id, 'finished')
 
 

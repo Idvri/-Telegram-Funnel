@@ -10,12 +10,16 @@ from .models import Funnel
 
 
 async def check_triggers(text: str) -> bool:
+    """Функция для проверки слов-триггеров."""
+
     if re.match(r'.*[Оо]тлично.*', text) or re.match(r'.*[Пп]рекрасно.*', text):
         return True
     return False
 
 
 async def check_status(user_id: int) -> bool:
+    """Функция для проверки статуса воронки."""
+
     async with DATABASE_ENGINE.connect() as conn:
         query = select(Funnel.status).where(Funnel.id == user_id)
         result = await conn.execute(query)
@@ -26,6 +30,8 @@ async def check_status(user_id: int) -> bool:
 
 
 async def create_funnel_db(user_id: int, user_status: str) -> bool:
+    """Функция для создания воронки."""
+
     try:
         async with DATABASE_ENGINE.connect() as conn:
             stmt = insert(
@@ -42,6 +48,8 @@ async def create_funnel_db(user_id: int, user_status: str) -> bool:
 
 
 async def change_funnel_status(user_id: int, user_status: str) -> None:
+    """Функция для изменения статуса воронки."""
+
     async with DATABASE_ENGINE.connect() as conn:
         stmt = update(
             Funnel

@@ -15,6 +15,8 @@ STATUS_CHOICES = (
 
 
 class Funnel(Base):
+    """Класс воронки."""
+
     __tablename__ = 'funnel'
 
     id: Mapped[int] = mapped_column(
