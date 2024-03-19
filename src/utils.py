@@ -17,16 +17,19 @@ async def check_triggers(text: str) -> bool:
     return False
 
 
-async def check_status(user_id: int) -> bool:
+async def check_status(user_id: int) -> bool | None:
     """Функция для проверки статуса воронки."""
 
     async with DATABASE_ENGINE.connect() as conn:
         query = select(Funnel.status).where(Funnel.id == user_id)
         result = await conn.execute(query)
         status = result.scalars().one_or_none()
-        if status != 'alive':
-            return True
-        return False
+        if status is not None:
+            if status != 'alive':
+                return True
+            return False
+        else:
+            return None
 
 
 async def create_funnel_db(user_id: int, user_status: str) -> bool:
