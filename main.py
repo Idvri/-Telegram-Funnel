@@ -47,7 +47,7 @@ async def start_funnel_handler(client: Client, message: Message) -> None:
 async def triggers_funnel_handler(_, message: Message) -> None:
     """Handler для проверки новых сообщений пользователей на наличие слов-триггеров."""
 
-    if await check_status(message.from_user.id) and await check_triggers(message.text):
+    if not await check_status(message.from_user.id) and await check_triggers(message.text):
         await change_funnel_status(message.from_user.id, 'finished')
 
 
